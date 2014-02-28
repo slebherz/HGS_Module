@@ -1,0 +1,67 @@
+//  negative_inflow_accounting.ocl
+//
+// Sets inflows for nodes: 100, 200, 270, 295, 395, 500, 600, 690, 995.
+
+// The inflows are adjusted with output from the HGS module; however,
+// the HGS module does not run prior to the solve on the first timestep.
+// So on the first timestep and only the first timestep, set the HGS inflow
+// adjustments to zero.
+:FOR:
+{
+    [node] = { 100, 200, 270, 295, 395, 500, 600, 690 }
+}
+    Set : HGS_Inflow_[node]
+    { 
+        condition : abs_period = 1
+        Value : 0
+    }
+:NEXT:
+
+// These nodes have inflows stored in timeseries and adjustments calculated
+// by HGS.
+:FOR:
+{
+    [node] = { 100, 200, 395, 500 }
+}
+    // Set the inflows to the sum of the timeseries and the value provided
+    // by HGS. If HCL inflows are negative, the negatives are stored in
+    // "InfDeficit", converting the negatives to 0. Positive values reduce
+    // the value of InfDeficit until it's 0.    
+    Set : inflow[node]
+    { 
+        Value : max{0, timesers([node]/inflow)
+                       + convert_units{HGS_Inflow_[node], cms, af}
+                       - InfDeficit[node](-1)}
+    }
+    Set : InfDeficit[node]
+    {   
+        Value : max{0, InfDeficit[node](-1) 
+                       - timesers([node]/inflow) 
+                       - convert_units{HGS_Inflow_[node], cms, af}} 
+    }
+:NEXT:
+
+// These nodes have inflow adjustments calculated by HGS.
+:FOR:
+{
+    [node] = { 270, 295, 600, 690 }
+}
+    Set : inflow[node]
+    {         
+        Value : convert_units{HGS_Inflow_[node], cms, af }
+    }
+:NEXT:
+
+
+// The inflows from Node 995 are from a timeseries.
+// If inflows are negative, the negatives are stored in "InfDeficit",
+// converting the negatives to 0. Positive values reduce the value of
+// InfDeficit until it's 0.
+Set : inflow995
+{ 
+    Value : max{0, timesers(995/inflow) - InfDeficit995(-1)}
+}
+Set : InfDeficit995
+{   
+    Value : max{0, InfDeficit995(-1) - timesers(995/inflow) }
+}

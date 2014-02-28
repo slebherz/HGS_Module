@@ -1,0 +1,46 @@
+//
+// Invokes the HGS Module. The module assumes the HGS model is executing
+// as a completely independent process (neither OASIS spawns HGS nor does
+// HGS spawn OASIS -- the user must execute both HGS and model.exe separately).
+//
+// The module acts as the in-between for data transfer between models. The
+// data transfer occurs at each Oasis timestep.
+//
+// Writes Oasis output for HGS.
+//
+
+// Invoke the HGS Module.
+Run_Module: HGS
+{  
+   Input:  
+   { 
+      // Flag that identifies the module is called post-solve.
+      // The convention is, 0:pre-solve, otherwise:post-solve
+      1,
+   
+      // The absolute period is used to write the .[per#] extension on files
+      // to be read by HGS.
+      abs_period,
+      
+      // Deliveries (in cms, negative values) to all demands in the model.
+      convert_units{ delivery350, af, cms } * -1,
+      convert_units{ delivery650, af, cms } * -1,
+      convert_units{ delivery651, af, cms } * -1,
+      convert_units{ delivery652, af, cms } * -1,
+      convert_units{ delivery850, af, cms } * -1,
+      convert_units{ delivery950, af, cms } * -1,
+      convert_units{ delivery951, af, cms } * -1,
+      
+      // Releases (in cms) from all reservoirs in the model.
+      convert_units{ flow295.290, af, cms },
+      convert_units{ flow395.390, af, cms },
+      convert_units{ flow995.980, af, cms },
+
+      // Boolean that identifies whether MDS is met for the timestep.
+      MDS_IsMet
+   }
+   Output: 
+   {
+
+   }
+}

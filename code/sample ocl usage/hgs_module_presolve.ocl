@@ -1,0 +1,42 @@
+//
+// Invokes the HGS Module. The module assumes the HGS model is executing
+// as a completely independent process (neither OASIS spawns HGS nor does
+// HGS spawn OASIS -- the user must execute both HGS and model.exe separately).
+//
+// The module acts as the in-between for data transfer between models. The
+// data transfer occurs at each Oasis timestep.
+//
+// Sets OASIS variables based on the HGS results communicated to OASIS via
+// the module.
+//
+
+// Placeholder until MDS determination is modeled.
+Set : MDS_IsMet { Value : 1 }
+
+// Invoke the HGS Module.
+Run_Module: HGS
+{  
+   Input:  
+   { 
+      // Flag that identifies the module is called pre-solve.
+      // The convention is, 0:pre-solve, otherwise:post-solve
+      0,
+   
+      // The absolute period is used to write the .[per#] extension on files
+      // to be read by HGS.
+      abs_period
+   }
+   Output: 
+   {
+      // Inflow adjustments (in cms) to be set as the node inflow or
+      // added to an existing node inflow.
+      HGS_Inflow_100,
+      HGS_Inflow_200,
+      HGS_Inflow_270,
+      HGS_Inflow_295,
+      HGS_Inflow_395,
+      HGS_Inflow_500,
+      HGS_Inflow_600,
+      HGS_Inflow_690
+   }
+}

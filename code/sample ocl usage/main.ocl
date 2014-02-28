@@ -1,0 +1,24 @@
+/*  These are specifications. The real work is done elsewhere. */
+:Include: ocl\constants_inc.ocl
+
+:Module:  DLL  HGS = HGS_Module.dll
+
+:Static:  statdata.mdb                 /* Access file with lookups and patterns */
+:Time:    ..\..\..\basedata\basedata.dss
+
+:Include: ocl\udef_list.ocl           /* File with list of user-defined variables. */
+
+:Commands:
+
+:Include: ocl\hgs_module_presolve.ocl
+:Include: ocl\negative_inflow_accounting.ocl
+
+// unrelated code removed.
+
+Solve : {priority : 1}
+
+// unrelated code removed.
+
+:Include: ocl\hgs_module_postsolve.ocl
+
+:End:
