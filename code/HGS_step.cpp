@@ -41,7 +41,7 @@ extern "C" __declspec( dllexport )
 	{
 		// The absolute period *of the previous timestep* is used to identify
 		// the files written by HGS to be incorporated into the current OASIS
-		// timestepfor -- files are written with a .[timestep#] extension.
+		// timestep -- files are written with a .[timestep#] extension.
 		std::ostringstream fnameHGS;
 		fnameHGS << ::runDirectory << "/HGS/" << "LRRBo.OASIS_output."
 		<< std::setfill('0') << std::setw(3) << period - 1;	
