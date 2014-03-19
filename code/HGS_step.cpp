@@ -34,11 +34,12 @@ extern "C" __declspec( dllexport )
 	bool isPreSolve = argument[0] == 0;
 	int period = (int)argument[1];
 
-	// The models run independently for the first timestep.
-	if(period == 1) return 1;
-
 	if(isPreSolve)
 	{
+		// The models run independently for the first timestep so there's no need
+		// to wait for and read HGS output.
+		if(period == 1) return 1;
+
 		// The absolute period *of the previous timestep* is used to identify
 		// the files written by HGS to be incorporated into the current OASIS
 		// timestep -- files are written with a .[timestep#] extension.
@@ -110,9 +111,9 @@ void WriteOasisOutput(float argument[])
 	fOasisReleases.precision(2);
 	// Write the releases.
 	fOasisReleases << "3\t\t!number of values" << std::endl;
-	fOasisReleases << std::fixed << flow295_290 << "\t\t!discharge rate for 995 m3/s" << std::endl;
+	fOasisReleases << std::fixed << flow295_290 << "\t\t!discharge rate for 295 m3/s" << std::endl;
 	fOasisReleases << std::fixed << flow395_390 << "\t\t!discharge rate for 395 m3/s" << std::endl;
-	fOasisReleases << std::fixed << flow995_980 << "\t\t!discharge rate for 295 m3/s" << std::endl;
+	fOasisReleases << std::fixed << flow995_980 << "\t\t!discharge rate for 995 m3/s" << std::endl;
 	fOasisReleases.close();
 
 	// Prepare the file that will contain the MDS flag.
